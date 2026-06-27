@@ -1,3 +1,10 @@
+import {
+  "sichenzhao/personal-site/src/content/config",
+  "sichenzhao/personal-site/src/content/model",
+  "sichenzhao/personal-site/src/content/pages",
+  "sichenzhao/personal-site/src/content/posts",
+}
+
 supported_targets = "js"
 
 options(

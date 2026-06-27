@@ -1,0 +1,5 @@
+import {
+  "sichenzhao/personal-site/src/content/model",
+}
+
+supported_targets = "js"

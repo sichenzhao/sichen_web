@@ -1,70 +1,30 @@
 ///|
-extern "js" fn page_kind() -> Int =
-  #|() => window.location.pathname.endsWith("/blog.html") ? 1 : 0
-
-///|
-extern "js" fn render_intro() -> Unit =
-  #|() => {
-  #|  document.title = "Sichen Zhao";
-  #|  document.querySelector("#app").innerHTML = `
-  #|    <main>
-  #|      <section class="intro">
-  #|        <p class="eyebrow">Hello, I am</p>
-  #|        <h1>Sichen Zhao</h1>
-  #|        <p class="lede">I am building a small personal website for writing, learning notes, and projects.</p>
-  #|        <p>This first version is intentionally simple: an intro page, a blog page, and a MoonBit build that renders the page content in the browser.</p>
-  #|      </section>
-  #|      <section class="section">
-  #|        <h2>About</h2>
-  #|        <p>I like learning by making small things. This site will grow as I explore MoonBit, write short notes, and collect project ideas.</p>
-  #|      </section>
-  #|      <section class="section">
-  #|        <h2>Now</h2>
-  #|        <ul>
-  #|          <li>Learning MoonBit for web experiments</li>
-  #|          <li>Setting up a clean place to write</li>
-  #|          <li>Keeping the design quiet and easy to read</li>
-  #|        </ul>
-  #|      </section>
-  #|    </main>`;
-  #|}
-
-///|
-extern "js" fn render_blog() -> Unit =
-  #|() => {
-  #|  document.title = "Blog - Sichen Zhao";
-  #|  document.querySelector("#app").innerHTML = `
-  #|    <main>
-  #|      <section class="intro">
-  #|        <p class="eyebrow">Blog</p>
-  #|        <h1>Writing</h1>
-  #|        <p class="lede">Short notes about MoonBit, projects, and things I am learning.</p>
-  #|      </section>
-  #|      <section class="posts">
-  #|        <article class="post">
-  #|          <p class="date">June 2026</p>
-  #|          <h2>Starting a website with MoonBit</h2>
-  #|          <p>A first pass at a personal site with a self-introduction, a blog page, and a MoonBit build that renders the content.</p>
-  #|        </article>
-  #|        <article class="post">
-  #|          <p class="date">Draft</p>
-  #|          <h2>What I want this site to become</h2>
-  #|          <p>A compact home for experiments, writing, and notes worth keeping.</p>
-  #|        </article>
-  #|        <article class="post">
-  #|          <p class="date">Draft</p>
-  #|          <h2>MoonBit learning log</h2>
-  #|          <p>Syntax notes, build commands, and small discoveries from learning the language.</p>
-  #|        </article>
-  #|      </section>
-  #|    </main>`;
-  #|}
-
-///|
 fn main {
-  if page_kind() == 1 {
-    render_blog()
+  if page_kind() == 2 {
+    match @posts.find(post_slug()) {
+      Some(post) =>
+        show_page(
+          post.title + " - " + @config.site.brand,
+          render_header(@config.site, true) +
+          render_post_page(post, @pages.blog),
+        )
+      None =>
+        show_page(
+          @pages.blog.page_title,
+          render_header(@config.site, true) +
+          render_blog(@pages.blog, @posts.all),
+        )
+    }
+  } else if page_kind() == 1 {
+    show_page(
+      @pages.blog.page_title,
+      render_header(@config.site, true) + render_blog(@pages.blog, @posts.all),
+    )
   } else {
-    render_intro()
+    show_page(
+      @pages.about.page_title,
+      render_header(@config.site, false) +
+      render_about(@pages.about, @config.site),
+    )
   }
 }
